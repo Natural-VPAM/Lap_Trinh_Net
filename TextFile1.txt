@@ -1,0 +1,33 @@
+-- Câu 1: Trình bày sự khác nhau giữa Value Types (Kiểu giá trị) và Reference Types
+(Kiểu tham chiếu) trong C# về cơ chế lưu trữ vùng nhớ (Stack vs Heap).
+
+=> Trong C#, kiểu giá trị như int, bool hay struct được lưu trực tiếp trên Stack. Khi gán một biến kiểu giá trị cho biến khác, 
+dữ liệu sẽ được sao chép sang vùng nhớ mới, vì vậy mỗi biến tồn tại độc lập và thay đổi một biến không ảnh hưởng đến biến kia. 
+Ngược lại, kiểu tham chiếu như class, object hay array lưu địa chỉ tham chiếu trên Stack, còn dữ liệu thực sự nằm trên Heap. 
+Khi gán một biến kiểu tham chiếu cho biến khác, cả hai biến cùng trỏ đến cùng một vùng nhớ trên Heap, nên thay đổi dữ liệu qua một biến 
+sẽ ảnh hưởng đến biến còn lại.
+
+-- Câu 2: Tính năng Init-only Properties (init) trong C# 9/10 khác gì so với thuộc tính
+có set thông thường? Nêu trường hợp sử dụng thực tế.
+
+=> Thuộc tính có set thông thường cho phép thay đổi giá trị bất kỳ lúc nào sau khi đối tượng được khởi tạo. 
+Trong khi đó, thuộc tính init trong C# 9/10 chỉ cho phép gán giá trị trong quá trình khởi tạo đối tượng, thông qua constructor hoặc 
+object initializer. Sau khi đối tượng đã được tạo, thuộc tính này trở thành bất biến. Tính năng này thường được dùng trong các mô hình 
+dữ liệu bất biến như DTO hoặc các class đại diện cho dữ liệu cấu hình, giúp đảm bảo rằng dữ liệu không bị thay đổi ngoài ý muốn sau khi 
+khởi tạo.
+
+-- Câu 3: Phân biệt sự khác nhau giữa phương thức virtual ở lớp cha và phương
+thức override ở lớp con khi triển khai tính Đa hình (Polymorphism).
+
+=>  Một phương thức được khai báo là virtual ở lớp cha cho phép lớp con có thể ghi đè lại hành vi của nó. 
+Khi lớp con sử dụng override, phương thức đó sẽ thay thế hoàn toàn cách triển khai của lớp cha. Điều này tạo nên cơ chế đa hình, 
+nghĩa là khi gọi phương thức thông qua biến kiểu lớp cha nhưng tham chiếu đến đối tượng lớp con, phương thức override sẽ được thực thi 
+thay vì phương thức mặc định ở lớp cha.
+
+-- Câu 4: Tại sao một thành phần được khai báo là static trong Lớp (Class) lại không thể
+truy xuất thông qua một thể hiện (Object Instance) được tạo bằng toán tử new?
+
+=> Thành phần static thuộc về lớp chứ không thuộc về bất kỳ đối tượng nào được tạo bằng toán tử new. 
+Nó được lưu trong vùng nhớ riêng biệt và tồn tại xuyên suốt vòng đời của chương trình. Khi tạo một đối tượng, dữ liệu instance được cấp phát riêng, 
+nhưng dữ liệu static không nằm trong đối tượng đó. Vì lý do này, truy xuất thành phần static qua instance sẽ gây nhầm lẫn rằng mỗi đối tượng có bản sao riêng, 
+trong khi thực tế chỉ có một bản duy nhất cho toàn bộ lớp. Do đó, thành phần static chỉ nên được truy xuất thông qua tên lớp.
