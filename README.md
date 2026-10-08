@@ -6,7 +6,7 @@ Markdown
 - **Mã số sinh viên:** 24810320222
 - **Lớp:** D19QTANM1
 - **Tên môn học:** Lập trình C# / Windows Forms
-- **Tên bài tập:** Tạo một máy tính tính cước dịch vụ và giảm giá
+- **Tên bài tập:** Ôn tập Window Form
 
 ---
 
