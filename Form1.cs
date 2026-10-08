@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace WindowsFormsApp3
+namespace WindowsFormsApp5
 {
     public partial class Form1 : Form
     {
@@ -17,35 +17,55 @@ namespace WindowsFormsApp3
             InitializeComponent();
         }
 
-        private void btnTinhTien_Click(object sender, EventArgs e)
+        private void btnTaiAnh_Click(object sender, EventArgs e)
         {
-            double donGia, giamGia;
-            int soLuong;
-
-            // Kiểm tra dữ liệu nhập
-            if (!double.TryParse(txtDonGia.Text, out donGia) ||
-                !int.TryParse(txtSoLuong.Text, out soLuong) ||
-                !double.TryParse(txtGiamGia.Text, out giamGia))
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Image Files|*.jpg;*.png";
+            if (ofd.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show("Vui lòng nhập số hợp lệ!", "Lỗi nhập liệu",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                picAnhLoi.Image = Image.FromFile(ofd.FileName);
+                picAnhLoi.SizeMode = PictureBoxSizeMode.StretchImage;
             }
-
-            // Công thức tính tổng tiền
-            double tongTien = (donGia * soLuong) * (100 - giamGia) / 100;
-
-            // Hiển thị kết quả
-            lblTongTien.Text = "Tổng tiền: " + tongTien.ToString("N0") + " VND";
         }
 
-        private void btnLamMoi_Click(object sender, EventArgs e)
+        private void btnGuiYeuCau_Click(object sender, EventArgs e)
         {
-            txtDonGia.Clear();
-            txtSoLuong.Clear();
-            txtGiamGia.Clear();
-            lblTongTien.Text = "";
-            txtDonGia.Focus();
+            string maPhieu = txtMaPhieu.Text;
+            string nguoiYeuCau = txtNguoiYeuCau.Text;
+            string ngayGhiNhan = dtpNgayGhiNhan.Value.ToShortDateString();
+
+            string mucDo = rbThap.Checked ? "Thấp" :
+                           rbTrungBinh.Checked ? "Trung bình" :
+                           rbKhanCap.Checked ? "Khẩn cấp" : "Chưa chọn";
+
+            string loaiSuCo = cmbLoaiSuCo.SelectedItem?.ToString() ?? "Chưa chọn";
+
+            string thietBi = "";
+            if (chkMayTinhBan.Checked) thietBi += "Máy tính bàn, ";
+            if (chkLaptop.Checked) thietBi += "Laptop, ";
+            if (chkMayIn.Checked) thietBi += "Máy in, ";
+            if (chkDienThoai.Checked) thietBi += "Điện thoại, ";
+            if (thietBi.EndsWith(", ")) thietBi = thietBi.Substring(0, thietBi.Length - 2);
+
+            string thongTin = $"Mã phiếu: {maPhieu}\n" +
+                              $"Người yêu cầu: {nguoiYeuCau}\n" +
+                              $"Ngày ghi nhận: {ngayGhiNhan}\n" +
+                              $"Mức độ ưu tiên: {mucDo}\n" +
+                              $"Loại sự cố: {loaiSuCo}\n" +
+                              $"Thiết bị ảnh hưởng: {thietBi}";
+
+            MessageBox.Show(thongTin, "Tóm tắt yêu cầu", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnNhapLai_Click(object sender, EventArgs e)
+        {
+            txtMaPhieu.Clear();
+            txtNguoiYeuCau.Clear();
+            dtpNgayGhiNhan.Value = DateTime.Now;
+            rbThap.Checked = rbTrungBinh.Checked = rbKhanCap.Checked = false;
+            cmbLoaiSuCo.SelectedIndex = -1;
+            chkMayTinhBan.Checked = chkLaptop.Checked = chkMayIn.Checked = chkDienThoai.Checked = false;
+            picAnhLoi.Image = null;
         }
     }
 }
