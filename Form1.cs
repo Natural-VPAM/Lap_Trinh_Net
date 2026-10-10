@@ -8,74 +8,96 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace WindowsFormsApp6
+namespace WindowsFormsApp8
 {
-    public partial class ErrorProviderForm : Form
+    public partial class Form1 : Form
     {
-        public ErrorProviderForm()
+        public class Product
+        {
+            public string ProductId { get; set; }
+            public string ProductName { get; set; }
+            public decimal UnitPrice { get; set; }
+            public int Quantity { get; set; }
+            public string Category { get; set; }
+        }
+
+        List<Product> products = new List<Product>();
+        BindingSource bs = new BindingSource();
+        public Form1()
         {
             InitializeComponent();
+            bs.DataSource = products;
+            dgvProducts.DataSource = bs;
         }
 
-        private void btnRegister_Click(object sender, EventArgs e)
+        private void btnAdd_Click(object sender, EventArgs e)
         {
-            epCheck.Clear(); // Xóa lỗi cũ
-            bool isValid = true;
-
-            // 1. Kiểm tra tên đăng nhập
-            if (string.IsNullOrWhiteSpace(txtUser.Text))
+            Product p = new Product()
             {
-                epCheck.SetError(txtUser, "Tên đăng nhập không được để trống");
-                isValid = false;
-            }
+                ProductId = txtProductId.Text,
+                ProductName = txtProductName.Text,
+                UnitPrice = decimal.Parse(txtUnitPrice.Text),
+                Quantity = int.Parse(txtQuantity.Text),
+                Category = txtCategory.Text
+            };
 
-            // 2. Kiểm tra mật khẩu
-            if (string.IsNullOrWhiteSpace(txtPass.Text))
-            {
-                epCheck.SetError(txtPass, "Mật khẩu không được để trống");
-                isValid = false;
-            }
+            products.Add(p);
+            bs.ResetBindings(false); // Làm mới DataGridView
+        }
 
-            // 3. Kiểm tra xác nhận mật khẩu
-            if (txtPass.Text != txtConfirm.Text)
+        private void dgvProducts_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
             {
-                epCheck.SetError(txtConfirm, "Mật khẩu nhập lại không khớp");
-                isValid = false;
-            }
-
-            // 4. Kiểm tra tuổi ≥ 18
-            int age = DateTime.Now.Year - dtBirth.Value.Year;
-            if (dtBirth.Value.Date > DateTime.Now.AddYears(-age)) age--; // điều chỉnh nếu chưa tới sinh nhật
-            if (age < 18)
-            {
-                epCheck.SetError(dtBirth, "Bạn phải đủ 18 tuổi");
-                isValid = false;
-            }
-
-            // 5. Kiểm tra điều khoản dịch vụ
-            if (!chkAgree.Checked)
-            {
-                epCheck.SetError(chkAgree, "Bạn phải đồng ý điều khoản dịch vụ");
-                isValid = false;
-            }
-
-            // Nếu hợp lệ
-            if (isValid)
-            {
-                MessageBox.Show("Đăng ký thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Product p = products[e.RowIndex];
+                txtProductId.Text = p.ProductId;
+                txtProductName.Text = p.ProductName;
+                txtUnitPrice.Text = p.UnitPrice.ToString();
+                txtQuantity.Text = p.Quantity.ToString();
+                txtCategory.Text = p.Category;
             }
         }
 
-        private void btnReset_Click(object sender, EventArgs e)
+        private void btnDelete_Click(object sender, EventArgs e)
         {
-            txtUser.Clear();
-            txtPass.Clear();
-            txtConfirm.Clear();
-            dtBirth.Value = DateTime.Now;
-            rbMale.Checked = false;
-            rbFemale.Checked = false;
-            chkAgree.Checked = false;
-            epCheck.Clear();
+            if (dgvProducts.CurrentRow != null)
+            {
+                int index = dgvProducts.CurrentRow.Index;
+                DialogResult result = MessageBox.Show("Bạn có chắc muốn xóa sản phẩm này?",
+                                                      "Xác nhận",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    products.RemoveAt(index);
+                    bs.ResetBindings(false);
+                }
+            }
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            if (dgvProducts.CurrentRow != null)
+            {
+                int index = dgvProducts.CurrentRow.Index;
+                Product p = products[index];
+                p.ProductId = txtProductId.Text;
+                p.ProductName = txtProductName.Text;
+                p.UnitPrice = decimal.Parse(txtUnitPrice.Text);
+                p.Quantity = int.Parse(txtQuantity.Text);
+                p.Category = txtCategory.Text;
+
+                bs.ResetBindings(false);
+            }
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            string keyword = txtSearch.Text.ToLower();
+            var result = products.Where(p => p.ProductName.ToLower().Contains(keyword)).ToList();
+
+            bs.DataSource = result;
+            dgvProducts.DataSource = bs;
         }
     }
 }
