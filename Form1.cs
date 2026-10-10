@@ -8,64 +8,74 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace WindowsFormsApp5
+namespace WindowsFormsApp6
 {
-    public partial class Form1 : Form
+    public partial class ErrorProviderForm : Form
     {
-        public Form1()
+        public ErrorProviderForm()
         {
             InitializeComponent();
         }
 
-        private void btnTaiAnh_Click(object sender, EventArgs e)
+        private void btnRegister_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Image Files|*.jpg;*.png";
-            if (ofd.ShowDialog() == DialogResult.OK)
+            epCheck.Clear(); // Xóa lỗi cũ
+            bool isValid = true;
+
+            // 1. Kiểm tra tên đăng nhập
+            if (string.IsNullOrWhiteSpace(txtUser.Text))
             {
-                picAnhLoi.Image = Image.FromFile(ofd.FileName);
-                picAnhLoi.SizeMode = PictureBoxSizeMode.StretchImage;
+                epCheck.SetError(txtUser, "Tên đăng nhập không được để trống");
+                isValid = false;
+            }
+
+            // 2. Kiểm tra mật khẩu
+            if (string.IsNullOrWhiteSpace(txtPass.Text))
+            {
+                epCheck.SetError(txtPass, "Mật khẩu không được để trống");
+                isValid = false;
+            }
+
+            // 3. Kiểm tra xác nhận mật khẩu
+            if (txtPass.Text != txtConfirm.Text)
+            {
+                epCheck.SetError(txtConfirm, "Mật khẩu nhập lại không khớp");
+                isValid = false;
+            }
+
+            // 4. Kiểm tra tuổi ≥ 18
+            int age = DateTime.Now.Year - dtBirth.Value.Year;
+            if (dtBirth.Value.Date > DateTime.Now.AddYears(-age)) age--; // điều chỉnh nếu chưa tới sinh nhật
+            if (age < 18)
+            {
+                epCheck.SetError(dtBirth, "Bạn phải đủ 18 tuổi");
+                isValid = false;
+            }
+
+            // 5. Kiểm tra điều khoản dịch vụ
+            if (!chkAgree.Checked)
+            {
+                epCheck.SetError(chkAgree, "Bạn phải đồng ý điều khoản dịch vụ");
+                isValid = false;
+            }
+
+            // Nếu hợp lệ
+            if (isValid)
+            {
+                MessageBox.Show("Đăng ký thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
-        private void btnGuiYeuCau_Click(object sender, EventArgs e)
+        private void btnReset_Click(object sender, EventArgs e)
         {
-            string maPhieu = txtMaPhieu.Text;
-            string nguoiYeuCau = txtNguoiYeuCau.Text;
-            string ngayGhiNhan = dtpNgayGhiNhan.Value.ToShortDateString();
-
-            string mucDo = rbThap.Checked ? "Thấp" :
-                           rbTrungBinh.Checked ? "Trung bình" :
-                           rbKhanCap.Checked ? "Khẩn cấp" : "Chưa chọn";
-
-            string loaiSuCo = cmbLoaiSuCo.SelectedItem?.ToString() ?? "Chưa chọn";
-
-            string thietBi = "";
-            if (chkMayTinhBan.Checked) thietBi += "Máy tính bàn, ";
-            if (chkLaptop.Checked) thietBi += "Laptop, ";
-            if (chkMayIn.Checked) thietBi += "Máy in, ";
-            if (chkDienThoai.Checked) thietBi += "Điện thoại, ";
-            if (thietBi.EndsWith(", ")) thietBi = thietBi.Substring(0, thietBi.Length - 2);
-
-            string thongTin = $"Mã phiếu: {maPhieu}\n" +
-                              $"Người yêu cầu: {nguoiYeuCau}\n" +
-                              $"Ngày ghi nhận: {ngayGhiNhan}\n" +
-                              $"Mức độ ưu tiên: {mucDo}\n" +
-                              $"Loại sự cố: {loaiSuCo}\n" +
-                              $"Thiết bị ảnh hưởng: {thietBi}";
-
-            MessageBox.Show(thongTin, "Tóm tắt yêu cầu", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void btnNhapLai_Click(object sender, EventArgs e)
-        {
-            txtMaPhieu.Clear();
-            txtNguoiYeuCau.Clear();
-            dtpNgayGhiNhan.Value = DateTime.Now;
-            rbThap.Checked = rbTrungBinh.Checked = rbKhanCap.Checked = false;
-            cmbLoaiSuCo.SelectedIndex = -1;
-            chkMayTinhBan.Checked = chkLaptop.Checked = chkMayIn.Checked = chkDienThoai.Checked = false;
-            picAnhLoi.Image = null;
+            txtUser.Clear();
+            txtPass.Clear();
+            txtConfirm.Clear();
+            dtBirth.Value = DateTime.Now;
+            rbMale.Checked = false;
+            rbFemale.Checked = false;
+            chkAgree.Checked = false;
+            epCheck.Clear();
         }
     }
 }
