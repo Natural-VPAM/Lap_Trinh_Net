@@ -14,11 +14,11 @@ Markdown
 
 ### Bài 1: Quản lý lịch hẹn phòng khám
 
-![Bài tập 1](images/Ảnh chụp màn hình 2026-10-17 105509.png)
+![Bài tập 1](./images/Ảnh chụp màn hình 2026-10-17 105509.png)
 
 ### Bài 2: Quản lý mượn trả tại phòng thực hành
-![Bài tập 2](images/Ảnh chụp màn hình 2026-10-17 105835.png)
+![Bài tập 2](./images/Ảnh chụp màn hình 2026-10-17 105835.png)
 
 ### Bài 3: Quản lý đơn đăng ký dịch vụ sửa chữa
-![Bài tập 3](images/Ảnh chụp màn hình 2026-10-17 103927.png)
+![Bài tập 3](./images/Ảnh chụp màn hình 2026-10-17 103927.png)
 
