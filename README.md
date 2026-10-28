@@ -16,4 +16,5 @@ Markdown
 ![Giao diện chính bài 5.1](screenshots/Bai5.1-mainUI.png)
 
 ### Ảnh chụp bài 5.2: 
-![Thực thi chức năng](./screenshots/execution_result.png)
+![Giao diện chính bài 5.2](screenshots/Bai5.2-mainUI.png)
+![Màn hình đăng ký](screenshots/Bai5.2-register.png)
